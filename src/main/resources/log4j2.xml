@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+
+	<Appenders>
+
+		<!-- Console Appender -->
+		<Console name="LogToConsole" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+
+		<!-- Rolling File Appender -->
+		<RollingFile name="LogToRollingFile"
+			fileName="./logs/app.log"
+			filePattern="./logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%d{HH:mm:ss.SSS} %p %c{1} [%t] %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="10 MB" />
+			</Policies>
+		</RollingFile>
+
+	</Appenders>
+
+
+	<Loggers>
+		<!-- avoid duplicated logs with additivity=false -->
+		<Logger name="com.mlpt" level="debug" additivity="false">
+			<AppenderRef ref="LogToRollingFile" />
+		</Logger>
+
+		<Logger name="com.mlpt" level="error" additivity="false">
+			<AppenderRef ref="LogToRollingFile" />
+		</Logger>
+
+		<Logger name="com.mlpt" level="trace" additivity="false">
+			<AppenderRef ref="LogToRollingFile" />
+		</Logger>
+
+		<!-- Log everything in hibernate -->
+		<Logger name="org.hibernate" level="info" additivity="false">
+			<AppenderRef ref="LogToRollingFile" />
+		</Logger>
+
+		<!-- Log SQL statements -->
+		<Logger name="org.hibernate.SQL" level="debug"
+			additivity="false">
+			<!-- <AppenderRef ref="LogToConsole" /> -->
+			<AppenderRef ref="LogToRollingFile" />
+		</Logger>
+
+		<!-- Log JDBC bind parameters -->
+		<Logger name="org.hibernate.type.descriptor.sql" level="trace" additivity="false"> 
+			<AppenderRef ref="LogToRollingFile" /> </Logger>
+
+		<Root level="error">
+			<AppenderRef ref="LogToRollingFile" />
+			<!-- <AppenderRef ref="LogToConsole" /> -->
+		</Root>
+		<!-- <Root level="trace"> <AppenderRef ref="LogToConsole" /> </Root> -->
+	</Loggers>
+
+
+</Configuration>
